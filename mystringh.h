@@ -10,8 +10,8 @@
 #include<vector>
 #include<cstring>
 using namespace ys;
-//È«´úÂëÃ»ÓĞÓÃmemcpy¶øÓÃstrcpyµÄÔ­Òò£ºstrcpy¸üÊÊºÏ×Ö·û´®£¬¶øÇÒĞ§ÂÊ¿ìÒ»Ğ©
-//²Î¿¼£ºhttps://blog.csdn.net/vgxpm/article/details/47614901
+//å…¨ä»£ç æ²¡æœ‰ç”¨memcpyè€Œç”¨strcpyçš„åŸå› ï¼šstrcpyæ›´é€‚åˆå­—ç¬¦ä¸²ï¼Œè€Œä¸”æ•ˆç‡å¿«ä¸€äº›
+//å‚è€ƒï¼šhttps://blog.csdn.net/vgxpm/article/details/47614901
 class out_of_r{};
 mystring::mystring() :s_ptr(nullptr), slength(0) {}
 mystring::mystring(const char* s) {
@@ -100,7 +100,7 @@ ostream& operator<<(ostream& out, const mystring& s) {
 	return out;
 }
 istream& operator>>(istream& in, mystring& s) {
-	char tem[1000];//Ã¿´ÎÊäÈë²»ÄÜ³¬¹ı1000¸ö×Ö·û
+	char tem[1000];//æ¯æ¬¡è¾“å…¥ä¸èƒ½è¶…è¿‡1000ä¸ªå­—ç¬¦
 	if (in >> tem) {
 		delete[] s.s_ptr;
 		s.slength = strlen(tem);
@@ -113,8 +113,8 @@ istream& operator>>(istream& in, mystring& s) {
 mystring& mystring::operator+(const mystring& s) {
 	return *this;
 }
-//²»¹»ºÃ£¬²Î¼ûeffective c++Ìõ¿î10£¬11
-//½ÓÉÏÌõ£¬²»ÖªµÀÎªÊ²Ã´¼ÓÈëÁËÒì³£°²È«ĞÔ»á¶àÌáÊ¾¼¸¸öwarning...²»¹ıĞŞ¸´ÁËÏÈÇ°¶ÔÏóÎö¹¹ºó³öÏÖµÄbug
+//ä¸å¤Ÿå¥½ï¼Œå‚è§effective c++æ¡æ¬¾10ï¼Œ11
+//æ¥ä¸Šæ¡ï¼Œä¸çŸ¥é“ä¸ºä»€ä¹ˆåŠ å…¥äº†å¼‚å¸¸å®‰å…¨æ€§ä¼šå¤šæç¤ºå‡ ä¸ªwarning...ä¸è¿‡ä¿®å¤äº†å…ˆå‰å¯¹è±¡ææ„åå‡ºç°çš„bug
 mystring& mystring::operator=(const mystring&s) {
 	if (s_ptr == s.s_ptr) return *this;
 	if (s_ptr != nullptr) {
@@ -127,7 +127,7 @@ mystring& mystring::operator=(const mystring&s) {
 	slength = s.slength;
 	return *this;
 }
-//s²»ÊÇÒ»¸ö¶ÔÏó£¬²»»á×Ô¶¯Îö¹¹
+//sä¸æ˜¯ä¸€ä¸ªå¯¹è±¡ï¼Œä¸ä¼šè‡ªåŠ¨ææ„
 mystring& mystring::operator=(const char*s) {
 	this->s_ptr = const_cast<char*>(s);
 	s = nullptr;
@@ -347,7 +347,7 @@ mystring& mystring::insert(size_t pos, const char* s, size_t start=0, size_t end
 	slength = slength + end - start;
 	return *this;
 }
-mystring& mystring::insert(size_t pos, const mystring&s, size_t begin=0, size_t end=npos) {//ÍµÀÁ²¢ÇÒ´úÂë¸´ÓÃ
+mystring& mystring::insert(size_t pos, const mystring&s, size_t begin=0, size_t end=npos) {//å·æ‡’å¹¶ä¸”ä»£ç å¤ç”¨
 	const char* tem = s.s_ptr;
 	return insert(pos, tem, begin, end);
 }
@@ -403,7 +403,7 @@ void mystring::resize(size_t n, const char c) {
 	strcpy(s_ptr, tem.get());
 	slength += n;
 }
-bool mystring::compare(const mystring&s2) const{//ÀÁµÃĞ´ÕâÁ½¸ö£¬Ö±½Óµ÷ÓÃÖØÔØ==ÁË
+bool mystring::compare(const mystring&s2) const{//æ‡’å¾—å†™è¿™ä¸¤ä¸ªï¼Œç›´æ¥è°ƒç”¨é‡è½½==äº†
 	return *this== s2;
 }
 bool mystring::compare(const char*_s) const{
@@ -428,10 +428,9 @@ bool mystring::start_with(const mystring&s)const noexcept {
 bool mystring::end_with(const char c)const noexcept {
 	return *(s_ptr + slength - 1) == c;
 }
-//Ã»Ïëµ½Ê²Ã´ºÃ·½·¨ÊµÏÖ£¬½÷É÷µ÷ÓÃ´Ëº¯Êı£¬ÒòÎª»á²úÉúÒ»¸östatic¶ÔÏó
-mystring& mystring::substr(size_t pos, size_t count)const {
-	static mystring tem(*this, pos, count);
-	return tem;
+
+mystring mystring::substr(size_t pos, size_t count)const {
+	return mystring (*this, pos, count);
 }
 size_t mystring::find(const mystring& needle)const {
 	shared_ptr<size_t[]> next(new size_t[needle.size()]());
@@ -627,7 +626,7 @@ int mystring::count(const mystring& needle)const {
 	}
 	return cou;
 }
-//·µ»ØÖµÎªÒ»¸övector
+//è¿”å›å€¼ä¸ºä¸€ä¸ªvector
 vector<mystring> mystring::split(const char c='\n',int n=INT_MAX) {
 	vector<mystring>strs;
 	int left = 0,cou=0;
@@ -644,7 +643,7 @@ vector<mystring> mystring::split(const char c='\n',int n=INT_MAX) {
 	strs.push_back(buf);
 	return strs;
 }
-vector<mystring> mystring::rsplit(const char c = '\n',int n=INT_MAX) {//Ê¹ÓÃreleaseÄ£Ê½ÔËĞĞ£¡·ñÔò¿ÉÄÜ»á±¨´í
+vector<mystring> mystring::rsplit(const char c = '\n',int n=INT_MAX) {//ä½¿ç”¨releaseæ¨¡å¼è¿è¡Œï¼å¦åˆ™å¯èƒ½ä¼šæŠ¥é”™
 	vector<mystring> strs = this->split(c,n);
 	for (int i = 0;i < strs.size()/2;i++) {
 		mystring tem = strs[i];
@@ -657,7 +656,7 @@ vector<mystring> mystring::partition(const char c) {
 	vector<mystring> strs = this->split(c, 1);
 	return strs;
 }
-//Ê¹ÓÃreleaseÄ£Ê½ÔËĞĞ£¡·ñÔò¿ÉÄÜ»á±¨´í
+//ä½¿ç”¨releaseæ¨¡å¼è¿è¡Œï¼å¦åˆ™å¯èƒ½ä¼šæŠ¥é”™
 vector<mystring> mystring::rpartition(const char c) {
 	vector<mystring> strs = this->rsplit(c, 1);
 	return strs;
